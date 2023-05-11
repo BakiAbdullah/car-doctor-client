@@ -4,7 +4,7 @@ import { AuthContext } from "../../providers/AuthProvider";
 
 const BookService = () => {
   const service = useLoaderData();
-  const { title, price, _id } = service;
+  const { title, price, _id, img } = service;
   const { user } = useContext(AuthContext);
 
   const handleBookService = (e) => {
@@ -15,19 +15,36 @@ const BookService = () => {
     const email = user?.email;
     const due = form.due.value;
 
-    const order = {
+    const booking = {
       customerName: name,
       email,
+      img,
       date,
       dueAmount: due,
-      service: _id,
-      price: price
+      service: title,
+      service_id: _id,
+      price: price,
     };
-    console.log(order)
+    console.log(booking);
+
+    fetch("http://localhost:5000/bookings", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if(data.insertedId){
+          alert('Order Confirmed!') //use sweet alert here
+        }
+      })
   };
 
   return (
-    <div className="text-center my-12">
+    <div className="text-center my-12 px-12">
       <h2 className="text-3xl font-bold">
         Book Service for: <span className="text-orange-600">{title}</span>
       </h2>

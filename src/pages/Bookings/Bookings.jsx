@@ -1,18 +1,33 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import BookingRow from "./BookingRow";
+import { useNavigate } from "react-router-dom";
 
 const Bookings = () => {
   const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
+  const navigate = useNavigate()
 
   const url = `http://localhost:5000/bookings?email=${user?.email}`;
 
+  //! We are verifying User by JWT Token so that only verified user can access data from server
   useEffect(() => {
-    fetch(url)
+    fetch(url, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("car-access-token")}`,
+      },
+    })
       .then((res) => res.json())
-      .then((data) => setBookings(data));
-  }, [url]);
+      .then((data) => {
+        if (!data.error) {
+          setBookings(data);
+        } else {
+          // Error khaile / token expired hoye gele Logout kore dite hbe
+          navigate("/");
+        }
+      });
+  }, [url, navigate]);
 
   const handleDelete = (id) => {
     const proceed = confirm("Are you sure you want to delete");
@@ -34,14 +49,13 @@ const Bookings = () => {
     }
   };
 
-
   const handleBookingConfirm = (id) => {
-    fetch(`http://localhost:5000/bookings/${id}`,{
+    fetch(`http://localhost:5000/bookings/${id}`, {
       method: "PATCH",
       headers: {
-        "content-type" : 'application/json'
+        "content-type": "application/json",
       },
-      body: JSON.stringify({status: 'confirm'})
+      body: JSON.stringify({ status: "confirm" }),
     })
       .then((res) => res.json())
       .then((data) => {
@@ -50,8 +64,8 @@ const Bookings = () => {
           alert("Confirmed successfully!");
           //update state
           const remaining = bookings.filter((booking) => booking._id !== id);
-          const updated = bookings.find(booking => booking._id === id)
-          updated.status = 'confirm'
+          const updated = bookings.find((booking) => booking._id === id);
+          updated.status = "confirm";
           const newBookings = [updated, ...remaining];
           setBookings(newBookings);
         }
@@ -74,6 +88,7 @@ const Bookings = () => {
                 </label>
               </th>
               <th>Image</th>
+              <th>CUSTOMER Name</th>
               <th>Service</th>
               <th>Price</th>
               <th>Date</th>

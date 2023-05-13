@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import img from "../../assets/images/login/login.svg";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
+import SocialLogin from "../Shared/SocialLogin/SocialLogin";
 
 const Login = () => {
   const { signIn } = useContext(AuthContext);
@@ -20,30 +21,17 @@ const Login = () => {
     signIn(email, password)
       .then((result) => {
         const user = result.user;
-        const loggedUser = {
-          email: user.email,
-        };
-        console.log(loggedUser);
+        console.log(user);
         // Send user back to the page they tried to visit when they were
         // redirected to the login page. Use { replace: true } so we don't create
         // another entry in the history stack for the login page.  This means that
         // when they get to the protected/ private route page and click the back button, they
         // won't end up back on the login page, which is also really nice for the
         // user experience.
+        navigate(from, { replace: true });
 
-        //? navigate(from, {replace: true});
-        //JWT POST API HIT
-        fetch("http://localhost:5000/jwt", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(loggedUser),
-        })
-          .then((res) => res.json)
-          .then((data) => {
-            console.log('jwt response',data);
-          });
+      //** Generate JWT Token here */
+
       })
       .catch((err) => console.log(err));
   };
@@ -99,6 +87,7 @@ const Login = () => {
                 Sign Up
               </Link>
             </p>
+            <SocialLogin></SocialLogin>
           </div>
         </div>
       </div>

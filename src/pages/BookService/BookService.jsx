@@ -27,7 +27,7 @@ const BookService = () => {
     };
     console.log(booking);
 
-    fetch("http://localhost:5000/bookings", {
+    fetch("https://car-doctor-server-gules.vercel.app/bookings", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -37,10 +37,10 @@ const BookService = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        if(data.insertedId){
-          alert('Order Confirmed!') //use sweet alert here
+        if (data.insertedId) {
+          alert("Order Confirmed!"); //use sweet alert here
         }
-      })
+      });
   };
 
   return (

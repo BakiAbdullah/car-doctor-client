@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
           email: currentUser.email,
         };
         //! POST API HIT (For JWT Token)
-        fetch("http://localhost:5000/jwt", {
+        fetch("https://car-doctor-server-gules.vercel.app/jwt", {
           method: "POST",
           headers: {
             "content-type": "application/json",
@@ -53,9 +53,8 @@ const AuthProvider = ({ children }) => {
             localStorage.setItem("car-access-token", data.token);
           });
       } else {
-            localStorage.removeItem("car-access-token");
+        localStorage.removeItem("car-access-token");
       }
-
 
       //** */
     });

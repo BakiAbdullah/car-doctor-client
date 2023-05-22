@@ -1,0 +1,7 @@
+/* 
+Create a folder firebase folder with config.js
+
+create  .env.local
+
+
+*/
